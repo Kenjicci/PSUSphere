@@ -10,7 +10,7 @@ class HomePageView(ListView):
     context_object_name = 'home'
     template_name = "home.html"
 
-
+#ORGANIZATIONS
 class OrganizationList(ListView):
      model = Organization 
      context_object_name = 'organization' 
@@ -35,11 +35,31 @@ class OrganizationDeleteView(DeleteView):
      template_name = 'org_del.html'
      success_url = reverse_lazy('organization-list')
 
+#ORGMEMBERS
 class OrgMemberList(ListView):
      model = OrgMember
      context_object_name = 'orgmember'
      template_name = 'orgmember_list.html'
      paginate_by = 5
 
+class OrgMemberCreateView(CreateView):
+     model = OrgMember
+     form_class = OrgMemberForm
+     template_name = 'orgmember_add.html'
+     success_url = reverse_lazy('orgmember-list')
+
+class OrgMemberUpdateView(UpdateView):
+     model = OrgMember
+     form_class = OrgMemberForm
+     template_name = 'orgmember_edit.html'
+     success_url = reverse_lazy('orgmember-list')
+
+class OrgMemberDeleteView(DeleteView):
+     model = OrgMember
+     template_name = 'orgmember_del.html'
+     success_url = reverse_lazy('orgmember-list')
+
      
+
+
 
