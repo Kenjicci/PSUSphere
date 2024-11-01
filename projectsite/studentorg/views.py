@@ -56,14 +56,16 @@ class OrgMemberList(ListView):
      template_name = 'orgmember_list.html'
      paginate_by = 5
         
-#still have error 
      def get_queryset(self, *args, **kwargs):
-        qs = super(OrgMemberList, self).get_queryset(*args, **kwargs)
-        if self.request.GET.get("q") is not None: 
-            query = self.request.GET.get('q') 
-            qs = qs.filter(Q(date_joined__icontains=query)) 
-            
-        return qs
+          qs = super(OrgMemberList, self).get_queryset(*args, **kwargs)
+          if self.request.GET.get("q") !=None:
+               query = self.request.GET.get('q')
+               qs = qs.filter(Q(student__firstname__icontains=query) | 
+                              Q(student__lastname__icontains=query) | 
+                              Q(student__program__prog_name__icontains=query) | 
+                              Q(organization__name__icontains=query) | 
+                              Q(date_joined__icontains=query))
+          return qs
 
 class OrgMemberCreateView(CreateView):
      model = OrgMember
