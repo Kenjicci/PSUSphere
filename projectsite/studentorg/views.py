@@ -4,7 +4,13 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from studentorg.models import Organization, OrgMember, Student, College, Program
 from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm, ProgramForm
 from django.urls import reverse_lazy
+from typing import Any
+from django.db.models.query import QuerySet
+from django.db.models.query import Q
+from django.utils.decorators import method_decorator 
+from django.contrib.auth.decorators import login_required 
 
+@method_decorator(login_required, name="dispatch")
 class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
@@ -16,6 +22,14 @@ class OrganizationList(ListView):
      context_object_name = 'organization' 
      template_name = 'org_list.html' 
      paginate_by = 5 
+     
+     def get_queryset(self, *args, **kwargs):
+         qs = super(OrganizationList, self).get_queryset(*args, **kwargs)
+         if self.request.GET.get("q") != None: 
+             query = self.request.GET.get('q') 
+             qs = qs.filter(Q(name__icontains=query) | 
+                            Q(description__icontains=query)) 
+         return qs 
 
 class OrganizationCreateView(CreateView):
      model = Organization
@@ -35,12 +49,23 @@ class OrganizationDeleteView(DeleteView):
      template_name = 'org_del.html'
      success_url = reverse_lazy('organization-list')
 
-#ORGMEMBERS
+#ORGMEMBERS 
 class OrgMemberList(ListView):
      model = OrgMember
      context_object_name = 'orgmember'
      template_name = 'orgmember_list.html'
      paginate_by = 5
+        
+     def get_queryset(self, *args, **kwargs):
+          qs = super(OrgMemberList, self).get_queryset(*args, **kwargs)
+          if self.request.GET.get("q") !=None:
+               query = self.request.GET.get('q')
+               qs = qs.filter(Q(student__firstname__icontains=query) | 
+                              Q(student__lastname__icontains=query) | 
+                              Q(student__program__prog_name__icontains=query) | 
+                              Q(organization__name__icontains=query) | 
+                              Q(date_joined__icontains=query))
+          return qs
 
 class OrgMemberCreateView(CreateView):
      model = OrgMember
@@ -66,6 +91,16 @@ class StudentList(ListView):
      template_name = 'student_list.html'
      paginate_by = 5
      
+     def get_queryset(self, *args, **kwargs):
+        qs = super(StudentList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None: 
+            query = self.request.GET.get('q') 
+            qs = qs.filter(Q(id__icontains=query) | 
+                           Q(firstname__icontains=query) |
+                           Q(middlename__icontains=query) |
+                           Q(lastname__icontains=query)) 
+        return qs
+     
 class StudentCreateView(CreateView):
      model = Student
      form_class = StudentForm
@@ -89,6 +124,14 @@ class CollegeList(ListView):
      context_object_name = 'college'
      template_name = 'college_list.html'
      paginate_by = 5
+     
+     def get_queryset(self, *args, **kwargs):
+        qs = super(CollegeList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None: 
+            query = self.request.GET.get('q') 
+            qs = qs.filter(
+                Q(college_name__icontains=query))
+        return qs
      
 class CollegeCreateView(CreateView):
      model = College
@@ -114,6 +157,14 @@ class ProgramList(ListView):
      template_name = 'program_list.html'
      paginate_by = 5
      
+     def get_queryset(self, *args, **kwargs):
+        qs = super(ProgramList, self).get_queryset(*args, **kwargs)
+        if self.request.GET.get("q") is not None: 
+            query = self.request.GET.get('q') 
+            qs = qs.filter(Q(prog_name__icontains=query))
+              
+        return qs
+     
 class ProgramCreateView(CreateView):
      model = Program
      form_class = ProgramForm
@@ -130,8 +181,4 @@ class ProgramDeleteView(DeleteView):
      model = Program
      template_name = 'program_del.html'
      success_url = reverse_lazy('program-list')
-
-
-
-
 
