@@ -9,12 +9,24 @@ from django.db.models.query import QuerySet
 from django.db.models.query import Q
 from django.utils.decorators import method_decorator 
 from django.contrib.auth.decorators import login_required 
+from django.db import connection
+from django.http import JsonResponse
 
 @method_decorator(login_required, name="dispatch")
 class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
+
+class ChartView(ListView):
+    template_name = 'chart.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        pass
 
 #ORGANIZATIONS
 class OrganizationList(ListView):
@@ -185,4 +197,33 @@ class ProgramDeleteView(DeleteView):
      model = Program
      template_name = 'program_del.html'
      success_url = reverse_lazy('program-list')
+
+def multipleBarbyCollege(request): #counts organization per college
+    query = ''' 
+    SELECT  
+        c.college_name, 
+        COUNT(o.id) AS org_count 
+    FROM  
+        app_organization o 
+    INNER JOIN app_college c ON o.college_id = c.id 
+    GROUP BY c.college_name 
+    ORDER BY c.college_name 
+    ''' 
+    with connection.cursor() as cursor: 
+        cursor.execute(query) 
+        rows = cursor.fetchall() 
+ 
+    result = {} 
+
+    # Process the rows into a dictionary
+    for row in rows: 
+        college_name = row[0] 
+        org_count = row[1] 
+ 
+        # Populate the result with the college name and organization count
+        result[college_name] = org_count 
+ 
+    return JsonResponse(result)
+
+
 
