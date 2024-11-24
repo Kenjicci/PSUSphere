@@ -1,5 +1,5 @@
 # PSUSphere 
 
 ## Member
-- Ken Cinco
-- Bea Magdayao 
+:fairy_woman: : Ken Cinco
+:fairy_man: : Bea Magdayao 
