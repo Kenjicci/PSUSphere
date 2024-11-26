@@ -4,14 +4,21 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from studentorg.models import Organization, OrgMember, Student, College, Program
 from studentorg.forms import OrganizationForm, OrgMemberForm, StudentForm, CollegeForm, ProgramForm
 from django.urls import reverse_lazy
+
 from typing import Any
 from django.db.models.query import QuerySet
 from django.db.models.query import Q
+
 from django.utils.decorators import method_decorator 
 from django.contrib.auth.decorators import login_required 
+
 from django.db import connection
 from django.http import JsonResponse
+
 from django.contrib import messages
+from datetime import datetime
+from django.db.models import Count
+
 
 @method_decorator(login_required, name="dispatch")
 class HomePageView(ListView):
@@ -53,7 +60,7 @@ class OrganizationCreateView(CreateView):
 
      def form_valid(self, form):
           org_name = form.instance.name
-          messages.success(self.request, f'{org_name} has been successfully added.')
+          messages.success(self.request, f'{org_name} has been added.')
 
           return super().form_valid(form)
 
@@ -66,7 +73,7 @@ class OrganizationUpdateView(UpdateView):
 
      def form_valid(self, form):
           org_name = form.instance.name
-          messages.success(self.request, f'{org_name} has been successfully updated.')
+          messages.success(self.request, f'{org_name} has been updated.')
 
           return super().form_valid(form)
      
@@ -76,13 +83,9 @@ class OrganizationDeleteView(DeleteView):
      template_name = 'org_del.html'
      success_url = reverse_lazy('organization-list')
 
-     ''''#not working
      def form_valid(self, form):
-          org_name = form.instance.name
-          messages.success(self.request, f'{org_name} has been successfully deleted.')
-
+          messages.success(self.request, 'Deleted successfully.')
           return super().form_valid(form)
-     '''
 
 #ORGMEMBERS 
 class OrgMemberList(ListView):
@@ -113,7 +116,7 @@ class OrgMemberCreateView(CreateView):
           org_member_firstname = form.instance.student.firstname
           org_member_lastname = form.instance.student.lastname
           org_member_org = form.instance.organization.name
-          messages.success(self.request, f'{org_member_firstname} {org_member_lastname} has been successfully registered to {org_member_org}.')
+          messages.success(self.request, f'{org_member_firstname} {org_member_lastname} has registered to {org_member_org}.')
 
           return super().form_valid(form)
 
@@ -134,6 +137,10 @@ class OrgMemberDeleteView(DeleteView):
      model = OrgMember
      template_name = 'orgmember_del.html'
      success_url = reverse_lazy('orgmember-list')
+
+     def form_valid(self, form):
+          messages.success(self.request, 'Deleted successfully')
+          return super().form_valid(form)
 
 #STUDENTS
 class StudentList(ListView):
@@ -186,6 +193,10 @@ class StudentDeleteView(DeleteView):
      template_name = 'student_del.html'
      success_url = reverse_lazy('student-list')
 
+     def form_valid(self, form):
+          messages.success(self.request, 'Deleted successfully')
+          return super().form_valid(form)
+
 #COLLEGE
 class CollegeList(ListView):
      model = College
@@ -229,6 +240,10 @@ class CollegeDeleteView(DeleteView):
      model = College
      template_name = 'college_del.html'
      success_url = reverse_lazy('college-list')
+
+     def form_valid(self, form):
+          messages.success(self.request, 'Deleted successfully')
+          return super().form_valid(form)
 
 #PROGRAM
 class ProgramList(ListView):
@@ -274,6 +289,10 @@ class ProgramDeleteView(DeleteView):
      template_name = 'program_del.html'
      success_url = reverse_lazy('program-list')
 
+     def form_valid(self, form):
+          messages.success(self.request, 'Deleted successfully')
+          return super().form_valid(form)
+
 def multipleBarbyCollege(request): #counts organization per college
     query = ''' 
     SELECT  
@@ -301,5 +320,24 @@ def multipleBarbyCollege(request): #counts organization per college
  
     return JsonResponse(result)
 
+def lineCountbyMonth(request):
+     current_year = datetime.now().year
 
+     result = {month: 0 for month in range (1, 13) }
+
+     stud_joined_per_month = OrgMember.objects.filter(date_joined__year=current_year) \
+          .value_list('date_joined', flat=True)
+     
+     for date_joined in stud_joined_per_month:
+          month = date_joined.month
+          result[month] += 1
+
+     month_names = {
+        1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
+        7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec' 
+    }
+
+     result_with_month_names = {month_names[int(month)]: count for month, count in result.items()}
+
+     return JsonResponse(result_with_month_names)
 
