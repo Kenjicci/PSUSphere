@@ -294,6 +294,43 @@ class ChartView(ListView):
     def get_queryset(self, *args, **kwargs):
         pass
 
+def BarCountStudentperCollege(request):
+    data = (
+        Student.objects.values('program__college__college_name')
+        .annotate(count=Count('id'))
+        .order_by('program__college__college_name')
+    )
+
+    if not data:
+        return JsonResponse({
+            'labels': [],
+            'series': []
+        })
+
+    chart_data = {
+        'labels': [item['program__college__college_name'] for item in data],
+        'series': [item['count'] for item in data]
+    }
+
+    return JsonResponse(chart_data)
+
+def PieOrgperCollege(request):
+     data = (
+          Organization.objects.values('college__college_name')
+          .annotate(count=Count('id'))
+          .order_by('-count')
+     )
+
+     chart_data = {
+        'labels': [item['college__college_name'] for item in data],
+        'series': [item['count'] for item in data],
+    }
+     
+     return JsonResponse(chart_data)
+
+
+
+#kila meighel
 def LineCountbyMonth2024(request):
     data = (
         OrgMember.objects.filter(date_joined__year=2024)

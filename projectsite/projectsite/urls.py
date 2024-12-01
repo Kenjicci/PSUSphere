@@ -5,7 +5,7 @@ from studentorg.views import OrgMemberList, OrgMemberCreateView, OrgMemberUpdate
 from studentorg.views import StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView
 from studentorg.views import CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView
 from studentorg.views import ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
-from studentorg.views import ChartView, LineCountbyMonth2024, PieStudentCountbyOrg, HorOrgCountByCollege, program_frequency_chart, student_enrollment_by_year
+from studentorg.views import ChartView, BarCountStudentperCollege, PieOrgperCollege, HorOrgCountByCollege, program_frequency_chart, student_enrollment_by_year
 from studentorg import views
 from django.contrib.auth import views as auth_views
 
@@ -15,8 +15,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', views.HomePageView.as_view(), name='home'), 
     path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
-    path('line-count-by-month-2024/', views.LineCountbyMonth2024, name='line-count-by-month-2024'),
-    path('pie-student-count-by-org/', views.PieStudentCountbyOrg, name='pie-student-count-by-org'),
+    path('bar-count-student-per-college/', views.BarCountStudentperCollege, name='bar-count-student-per-college'),
+    path('pie-org-per-college/', views.PieOrgperCollege, name='pie-org-per-college'),
     path('org-count-by-college/', views.HorOrgCountByCollege, name='org-count-by-college'),
     path('program-frequency-chart/', views.program_frequency_chart, name='program_frequency_chart'),
     path('student-enrollment-by-year/', views.student_enrollment_by_year, name='student_enrollment_by_year'),
