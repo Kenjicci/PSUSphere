@@ -1,506 +1,308 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
-<div class="page-inner"> 
-  <h4 class="page-title">Dashboard Charts</h4> 
-  <div class="row"> 
-    <div class="col-md-6"> 
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Multiple Bar Chart</div>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .lineChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(133, 236, 181);
+    }
+
+    .pieChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(255, 220, 23);
+    }
+
+    .radarChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(255, 209, 220);
+    }
+
+    .vennChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(135, 119, 255);
+    }
+
+    .lineChart .pieChart .horBarChart .polarAreaChart .horBarChart{
+        max-width: 100%;
+        height: auto;
+    }
+
+    .page-inner {
+        overflow-x: hidden;
+        padding-left: 20px;
+        padding-top: 6%;
+    }
+
+    .col-md-9 {
+        margin-top: 2%;
+        margin-left: 2%;
+    }
+
+    .card-container {
+        position: relative;
+        padding: 10px;
+        height: auto;
+        width: 100%;
+    }
+
+    .card {
+        width: 100%; 
+        max-width: 600px; 
+        margin: auto; 
+    }
+
+
+</style>
+
+<div class="page-inner">
+    <h4 class="page-title">Chart</h4>
+    <div class="page-category">Simple yet flexible Javascript charting for designers & developers. Please checkout their <a href="https://www.chartjs.org/" target="_blank">full documentation</a>.</div>
+    <div class="row">
+        <!-- Line Chart -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><b>Line Chart:</b> Students Joined Organizations in 2024</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-container">
+                        <div class="lineChart ct-perfect-fourth"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="multiBarChart"></canvas>
-          </div>
+
+        <!-- Pie Chart -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><b>Pie Chart:</b> Number of Students in Each Courses</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-container">
+                        <div class="pieChart ct-perfect-fourth"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Line Chart</div>
+
+        <!-- Radar Chart -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><b>Radar Chart:</b> Programs in Every Colleges</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-container" style="position: relative; height: 100%; width: 100%;">
+                        <canvas id="radarChart" class="radarChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="lineChart"></canvas>
-          </div>
+
+        <!-- Polar Area Chart -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><b>Polar Area Chart:</b> Number of Students Enrolled Every Year</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-container" style="position: relative; height: 100%; width: 100%;">
+                        <canvas id="polarAreaChart" class="polarAreaChart"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Pie Chart</div>
+
+        <!-- Horizontal Bar Chart -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><b>Horizontal Bar Chart:</b> Organizations in a College</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-container">
+                        <div class="horBarChart ct-perfect-fourth"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="pieChart" style="width: 20%; height: 20%"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Polar Area Chart</div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="polarAreaChart" style="width: 20%; height: 20%"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Scatter Chart</div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="scatterChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">Radar Chart</div>
-        </div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="radarChart"></canvas>
-          </div>
-        </div>
-      </div>
     </div>
 </div>
-{% endblock %}
 
-{% block chart %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  function loadChartData() {
-        // multiBarChart  
-        fetch("/multipleBarChart/") 
-        .then((response) => response.json()) 
-        .then((result) => { 
-            const colleges = Object.keys(result); // X-axis: College names
-            const orgCounts = Object.values(result); // Y-axis: Organization counts
+    document.addEventListener("DOMContentLoaded", function () {
+        // Line Chart
+        fetch('/line-count-by-month-2024/')
+            .then(response => response.json())
+            .then(data => {
+                new Chartist.Line('.lineChart', data, {
+                    fullWidth: true,
+                    chartPadding: {
+                        top: 15,
+                        right: 30,
+                        bottom: 15,
+                        left: 15
+                    },
+                    axisY: {
+                        onlyInteger: true,
+                        low: 0
+                    },
+                    axisX: {
+                        showGrid: true
+                    },
+                    plugins: [
+                        Chartist.plugins.tooltip()
+                    ]
+                });
+            });
 
-            // Render the chart
-            const multipleBarChart = document.getElementById("multipleBarChart").getContext("2d");
+        // Pie Chart
+        fetch('/pie-student-count-by-org/')
+            .then(response => response.json())
+            .then(data => {
+                const total = data.series.reduce((sum, count) => sum + count, 0);
+                const percentages = data.series.map(count => ((count / total) * 100).toFixed(1) + '%');
 
+                const seriesWithMeta = data.series.map((value, idx) => ({
+                    value: value,
+                    meta: data.labels[idx]
+                }));
 
-            new Chart(multipleBarChart, { 
-            type: "bar", 
-            data: { 
-                labels: colleges, // College names on X-axis
-                datasets: [ 
-                { 
-                    label: "Organization Count", 
-                    backgroundColor: "#59d05d", 
-                    borderColor: "#59d05d", 
-                    data: orgCounts, // Y-axis: Count of organizations
+                new Chartist.Pie('.pieChart', {
+                    series: seriesWithMeta,
+                    labels: percentages
+                }, {
+                    chartPadding: 30,
+                    labelOffset: 50,
+                    labelDirection: 'explode',
+                    plugins: [
+                        Chartist.plugins.tooltip({
+                            tooltipFnc: function (meta, value) {
+                                return `${meta}: ${value} students`;
+                            }
+                        })
+                    ]
+                });
+            });
+
+        // Radar Chart (Fake Data)
+        fetch('/program-frequency-chart/')
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.colleges; 
+            const programCounts = data.program_counts;  
+
+            new Chart(document.getElementById('radarChart'), {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Programs per College',
+                        data: programCounts,
+                        fill: true,
+                        backgroundColor: 'rgba(79, 140, 255, 0.2)', 
+                        borderColor: 'rgb(79, 140, 255)', 
+                        borderWidth: 2
+                    }]
                 },
-                ], 
-            }, 
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                plugins: { 
-                legend: { 
-                    position: "bottom", 
-                }, 
-                title: { 
-                    display: true, 
-                    text: "Number of Organizations per College", 
-                }, 
-                tooltip: { 
-                    mode: "index", 
-                    intersect: false, 
-                }, 
-                }, 
-                scales: { 
-                x: { 
-                    title: { 
-                    display: true, 
-                    text: "Colleges", // Label for X-axis
-                    }, 
-                }, 
-                y: { 
-                    title: { 
-                    display: true, 
-                    text: "Number of Organizations", // Label for Y-axis
-                    }, 
-                }, 
-                }, 
-            }, 
-            }); 
-        }) 
-        .catch((error) => console.error("Error:", error)); 
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        });
 
-    //   lineChart 
-        fetch("/lineChart/") 
-          .then((response) => response.json()) 
-          .then((result_with_month_names) => {
-            console.log(result); // Log the data to check if it's correct
-          })
-    //         var months = Object.keys(result_with_month_names); 
-    //         var counts = Object.values(result_with_month_names); 
-    //         var lineChart = document.getElementById("lineChart").getContext("2d"); 
-    
-    //         new Chart(lineChart, { 
-    //           type: "line", 
-    //           data: { 
-    //             labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
-    // "Nov", "Dec"], 
-    //             datasets: [ 
-    //               { 
-    //                 label: "Student Organizations Join Trends", 
-    //                 borderColor: "#1d7af3", 
-    //                 pointBorderColor: "#FFF", 
-    //                 pointBackgroundColor: "#1d7af3", 
-    //                 pointBorderWidth: 2, 
-    //                 pointHoverRadius: 4, 
-    //                 pointHoverBorderWidth: 1, 
-    //                 pointRadius: 4, 
-    //                 backgroundColor: "transparent", 
-    //                 fill: true, 
-    //                 borderWidth: 2, 
-    //                 data: counts, 
-    //               }, 
-    //             ], 
-    //           }, 
-    //           options: { 
-    //             responsive: true, 
-    //             maintainAspectRatio: false, 
-    //             legend: { 
-    //               position: "bottom", 
-    //               labels: { 
-    //                 padding: 10, 
-    //                 fontColor: "#1d7af3", 
-    //               }, 
-    //             }, 
-    //             tooltips: { 
-    //               bodySpacing: 4, 
-    //               mode: "nearest", 
-    //               intersect: 0, 
-    //               position: "nearest", 
-    //               xPadding: 10, 
-    //               yPadding: 10, 
-    //               caretPadding: 10, 
-    //             }, 
-    //             layout: { 
-    //               padding: { left: 15, right: 15, top: 15, bottom: 15 }, 
-    //             }, 
-    //           }, 
-    //         }); 
-          .catch((error) => console.error("Error:", error));
+        // Polar Area Chart
+        fetch('/student-enrollment-by-year/')
+        .then(response => response.json())
+        .then(data => {
+            
+            const years = data.years;  
+            const studentCounts = data.student_counts;  
 
+            new Chart(document.getElementById('polarAreaChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Students Enrolled by Year',
+                        data: studentCounts,
+                        backgroundColor: [
+                            'rgba(79, 140, 255, 0.2)',  
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgb(79, 140, 255)',  
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)',
+                            'rgb(255, 159, 64)',
+                            'rgb(75, 192, 192)',
+                            'rgb(153, 102, 255)',
+                            'rgb(255, 159, 64)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                    },
+                    scale: {
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
 
-        // pieChart 
-        fetch("/chart/") 
-          .then((response) => response.json()) 
-          .then((data) => { 
-            var severityLevels = Object.keys(data);
-            var counts = Object.values(data); 
-            var pieChart = document.getElementById("pieChart").getContext("2d"); 
-    
-            console.log("call"); 
-            new Chart(pieChart, { 
-              type: "pie", 
-              data: { 
-                datasets: [ 
-                  { 
-                    data: counts, 
-                    backgroundColor: ["#1d7af3", "#f3545d", "#fdaf4b"], 
-                    borderWidth: 0, 
-                  }, 
-                ], 
-                labels: severityLevels, 
-              }, 
-              options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                legend: { 
-                  position: "bottom", 
-                  labels: { 
-                    fontColor: "rgb(154, 154, 154)", 
-                    fontSize: 11, 
-                    usePointStyle: true, 
-                    padding: 20, 
-                  }, 
-                }, 
-                pieceLabel: { 
-                  render: "percentage", 
-                  fontColor: "white", 
-                  fontSize: 14, 
-                }, 
-                tooltips: false, 
-                layout: { 
-                  padding: { 
-                    left: 20, 
-                    right: 20, 
-                    top: 20, 
-                    bottom: 20, 
-                  }, 
-                }, 
-              }, 
-            }); 
-          }) 
-          .catch((error) => console.error("Error:", error)); 
+        // Horizontal Bar Chart
+        fetch('/org-count-by-college/')
+            .then(response => response.json())
+            .then(data => {
+                new Chartist.Bar('.horBarChart', {
+                    labels: data.labels,
+                    series: [data.series]
+                }, {
+                    horizontalBars: true,
+                    reverseData: true,
+                    axisX: {
+                        onlyInteger: true,
+                    },
+                    axisY: {
+                        offset: 120,
+                    },
+                    plugins: [
+                        Chartist.plugins.tooltip({
+                            tooltipFnc: function (meta, value) {
+                                return `${value} organization(s)`;
+                            }
+                        })
+                    ]
+                });
+            });
+    });
+</script>
 
-      
-        //   multiLine 
-        fetch("/multilineChart/") 
-          .then((response) => response.json()) 
-          .then((result_with_month_names) => { 
-            var countries = Object.keys(result_with_month_names); 
-            // Extract incident counts for each country 
-            var incidentCounts = []; 
-            var incidentCounts2 = []; 
-            var incidentCounts3 = []; 
-    
-            // Sort function to sort object keys by month 
-            function sortObjectKeys(obj) { 
-              return Object.keys(obj).sort((a, b) => parseInt(a) - parseInt(b)); 
-            } 
-    
-            // Check if data for each country exists and extract incident counts 
-            if (countries.length >= 1) { 
-              var country1_data = result_with_month_names[countries[0]]; 
-              var sortedKeys1 = sortObjectKeys(country1_data); 
-              incidentCounts = sortedKeys1.map((key) => country1_data[key]); 
-            } 
-            if (countries.length >= 2) { 
-              var country2_data = result_with_month_names[countries[1]]; 
-              var sortedKeys2 = sortObjectKeys(country2_data); 
-              incidentCounts2 = sortedKeys2.map((key) => country2_data[key]); 
-            } 
-            if (countries.length >= 3) { 
-              var country3_data = result_with_month_names[countries[2]]; 
-              var sortedKeys3 = sortObjectKeys(country3_data); 
-              incidentCounts3 = sortedKeys3.map((key) => country3_data[key]); 
-            } 
-    
-            var multipleLineChart = document.getElementById("multipleLineChart").getContext("2d"); 
-    
-            new Chart(multipleLineChart, { 
-              type: "line", 
-              data: { 
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct","Nov", "Dec"], 
-                datasets: [ 
-                  { 
-                    label: countries[0], 
-                    borderColor: "#1d7af3", 
-                    pointBorderColor: "#FFF", 
-                    pointBackgroundColor: "#1d7af3", 
-                    pointBorderWidth: 2, 
-                    pointHoverRadius: 4, 
-                    pointHoverBorderWidth: 1, 
-                    pointRadius: 4, 
-                    backgroundColor: "transparent", 
-                    fill: true, 
-                    borderWidth: 2, 
-                    data: incidentCounts, 
-                  }, 
-                  { 
-                    label: countries[1], 
-                    borderColor: "#59d05d", 
-                    pointBorderColor: "#FFF", 
-                    pointBackgroundColor: "#59d05d", 
-                    pointBorderWidth: 2, 
-                    pointHoverRadius: 4, 
-                    pointHoverBorderWidth: 1, 
-                    pointRadius: 4, 
-                    backgroundColor: "transparent", 
-                    fill: true, 
-                    borderWidth: 2, 
-                    data: incidentCounts2, 
-                  }, 
-                  { 
-                    label: countries[2], 
-                    borderColor: "#f3545d", 
-                    pointBorderColor: "#FFF", 
-                    pointBackgroundColor: "#f3545d", 
-                    pointBorderWidth: 2, 
-                    pointHoverRadius: 4, 
-                    pointHoverBorderWidth: 1, 
-                    pointRadius: 4, 
-                    backgroundColor: "transparent", 
-                    fill: true, 
-                    borderWidth: 2, 
-                    data: incidentCounts3, 
-                  }, 
-                ], 
-              }, 
-              options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                legend: { 
-                  position: "top", 
-                }, 
-                tooltips: { 
-                  bodySpacing: 4, 
-                  mode: "nearest", 
-                  intersect: 0, 
-                  position: "nearest", 
-                  xPadding: 10, 
-                  yPadding: 10, 
-                  caretPadding: 10, 
-                }, 
-                layout: { 
-                  padding: { left: 15, right: 15, top: 15, bottom: 15 }, 
-                }, 
-              }, 
-            }); 
-          }) 
-          .catch((error) => console.error("Error:", error));
-      } 
-  loadChartData();
-    var barChart = document.getElementById("barChart").getContext("2d"),
-    doughnutChart = document.getElementById("doughnutChart").getContext("2d"),
-    radarChart = document.getElementById("radarChart").getContext("2d"),
-    bubbleChart = document.getElementById("bubbleChart").getContext("2d"),
-    htmlLegendsChart = document.getElementById("htmlLegendsChart").getContext("2d");
-  var myBarChart = new Chart(barChart, { 
-    type: "bar", 
-    data: { 
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [
-        {
-          label: "Sales", 
-          backgroundColor: "rgb(23, 125, 255)", 
-          borderColor: "rgb(23, 125, 255)", 
-          data: [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4], 
-        }, 
-      ], 
-    }, 
-    options: { 
-      responsive: true, 
-      maintainAspectRatio: false, 
-      scales: { 
-        yAxes: [ 
-          { 
-            ticks: { 
-              beginAtZero: true, 
-            }, 
-          }, 
-        ], 
-      }, 
-    }, 
-  }); 
-
-  var myDoughnutChart = new Chart(doughnutChart, { 
-    type: "doughnut", 
-    data: { 
-      datasets: [ 
-        { 
-          data: [10, 20, 30], 
-          backgroundColor: ["#f3545d", "#fdaf4b", "#1d7af3"], 
-        }, 
-      ], 
- 
-      labels: ["Red", "Yellow", "Blue"], 
-    }, 
-    options: { 
-      responsive: true, 
-      maintainAspectRatio: false, 
-      legend: { 
-        position: "bottom", 
-      }, 
-      layout: { 
-        padding: { 
-          left: 20, 
-          right: 20, 
-          top: 20, 
-          bottom: 20, 
-        }, 
-      }, 
-    }, 
-  }); 
- 
-  var myRadarChart = new Chart(radarChart, { 
-    type: "radar", 
-    data: { 
-      labels: ["Running", "Swimming", "Eating", "Cycling", "Jumping"], 
-      datasets: [ 
-        { 
-          data: [20, 10, 30, 2, 30], 
-          borderColor: "#1d7af3", 
-          backgroundColor: "rgba(29, 122, 243, 0.25)", 
-          pointBackgroundColor: "#1d7af3", 
-          pointHoverRadius: 4, 
-          pointRadius: 3, 
-          label: "Team 1", 
-        }, 
-        { 
-          data: [10, 20, 15, 30, 22], 
-          borderColor: "#716aca", 
-          backgroundColor: "rgba(113, 106, 202, 0.25)", 
-          pointBackgroundColor: "#716aca", 
-          pointHoverRadius: 4, 
-          pointRadius: 3, 
-          label: "Team 2", 
-        }, 
-      ], 
-    }, 
-    options: { 
-      responsive: true, 
-      maintainAspectRatio: false, 
-      legend: { 
-        position: "bottom", 
-      }, 
-    }, 
-  }); 
- 
-  var myBubbleChart = new Chart(bubbleChart, { 
-    type: "bubble", 
-    data: { 
-      datasets: [ 
-        { 
-          label: "Car", 
-          data: [ 
-            { x: 25, y: 17, r: 25 }, 
-            { x: 30, y: 25, r: 28 }, 
-            { x: 35, y: 30, r: 8 }, 
-          ], 
-          backgroundColor: "#716aca", 
-        }, 
-        { 
-          label: "Motorcycles", 
-          data: [ 
-            { x: 10, y: 17, r: 20 }, 
-            { x: 30, y: 10, r: 7 }, 
-            { x: 35, y: 20, r: 10 }, 
-          ], 
-          backgroundColor: "#1d7af3", 
-        }, 
-      ], 
-    }, 
-    options: { 
-      responsive: true, 
-      maintainAspectRatio: false, 
-      legend: { 
-        position: "bottom", 
-      }, 
-      scales: { 
-        yAxes: [ 
-          { 
-            ticks: { 
-              beginAtZero: true, 
-            }, 
-          }, 
-        ], 
-        xAxes: [ 
-          { 
-            ticks: { 
-              beginAtZero: true, 
-            }, 
-          }, 
-        ], 
-      }, 
-    }, 
-  });   
-</script> 
-{% endblock %} 
+{% endblock %}

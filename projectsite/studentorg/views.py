@@ -17,7 +17,8 @@ from django.http import JsonResponse
 
 from django.contrib import messages
 from datetime import datetime
-from django.db.models import Count
+from django.db.models import Count, Avg
+from django.db.models.functions import ExtractMonth
 
 
 @method_decorator(login_required, name="dispatch")
@@ -25,16 +26,6 @@ class HomePageView(ListView):
     model = Organization
     context_object_name = 'home'
     template_name = "home.html"
-
-class ChartView(ListView):
-    template_name = 'chart.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-    def get_queryset(self, *args, **kwargs):
-        pass
 
 #ORGANIZATIONS
 class OrganizationList(ListView):
@@ -293,51 +284,92 @@ class ProgramDeleteView(DeleteView):
           messages.success(self.request, 'Deleted successfully')
           return super().form_valid(form)
 
-def multipleBarbyCollege(request): #counts organization per college
-    query = ''' 
-    SELECT  
-        c.college_name, 
-        COUNT(o.id) AS org_count 
-    FROM  
-        app_organization o 
-    INNER JOIN app_college c ON o.college_id = c.id 
-    GROUP BY c.college_name 
-    ORDER BY c.college_name 
-    ''' 
-    with connection.cursor() as cursor: 
-        cursor.execute(query) 
-        rows = cursor.fetchall() 
- 
-    result = {} 
+class ChartView(ListView):
+    template_name = 'chart.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
-    # Process the rows into a dictionary
-    for row in rows: 
-        college_name = row[0] 
-        org_count = row[1] 
- 
-        # Populate the result with the college name and organization count
-        result[college_name] = org_count 
- 
-    return JsonResponse(result)
+    def get_queryset(self, *args, **kwargs):
+        pass
 
-def lineCountbyMonth(request):
-     current_year = datetime.now().year
+def LineCountbyMonth2024(request):
+    data = (
+        OrgMember.objects.filter(date_joined__year=2024)
+        .annotate(month=ExtractMonth('date_joined'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
 
-     result = {month: 0 for month in range (1, 13) }
+    activity_data = {item['month']: item['count'] for item in data}
 
-     stud_joined_per_month = OrgMember.objects.filter(date_joined__year=current_year) \
-          .value_list('date_joined', flat=True)
-     
-     for date_joined in stud_joined_per_month:
-          month = date_joined.month
-          result[month] += 1
+    all_months = range(1, 13) 
+    complete_data = {month: activity_data.get(month, 0) for month in all_months}
 
-     month_names = {
-        1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
-        7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec' 
+    chart_data = {
+        'labels': [datetime(2024, month, 1).strftime('%b') for month in complete_data.keys()],
+        'series': [[count for count in complete_data.values()]],
     }
 
-     result_with_month_names = {month_names[int(month)]: count for month, count in result.items()}
+    return JsonResponse(chart_data)
 
-     return JsonResponse(result_with_month_names)
 
+def PieStudentCountbyOrg(request):
+    data = (
+        Student.objects.values('program__prog_name')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    chart_data = {
+        'labels': [item['program__prog_name'] for item in data],
+        'series': [item['count'] for item in data],
+    }
+
+    return JsonResponse(chart_data)
+
+def HorOrgCountByCollege(request):
+    data = (
+        Organization.objects.values('college__college_name')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    chart_data = {
+        'labels': [item['college__college_name'] for item in data],
+        'series': [item['count'] for item in data],
+    }
+
+    return JsonResponse(chart_data)
+
+def program_frequency_chart(request):
+    college_program_count = College.objects.annotate(num_programs=Count('program'))
+
+    colleges = [college.college_name for college in college_program_count]
+    program_counts = [college.num_programs for college in college_program_count]
+
+    data = {
+        'colleges': colleges,
+        'program_counts': program_counts,
+    }
+    
+    return JsonResponse(data)
+
+def student_enrollment_by_year(request):
+    students_by_year = Student.objects.annotate(enrollment_year=Count('student_id'))
+
+    years = set([student.student_id[:4] for student in students_by_year]) 
+    year_counts = {year: 0 for year in years}
+
+    for student in students_by_year:
+        year = student.student_id[:4]
+        year_counts[year] += 1
+
+    data = {
+        'years': list(year_counts.keys()), 
+        'student_counts': list(year_counts.values()),
+    }
+
+    return JsonResponse(data)
