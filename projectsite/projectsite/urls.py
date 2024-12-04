@@ -1,11 +1,14 @@
 from django.contrib import admin
 from django.urls import path, re_path
-from studentorg.views import HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView
-from studentorg.views import OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView
-from studentorg.views import StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView
-from studentorg.views import CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView
-from studentorg.views import ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView
-from studentorg.views import ChartView, BarCountStudentperCollege, PieOrgperCollege, HorOrgCountByCollege, program_frequency_chart, student_enrollment_by_year
+from studentorg.views import (
+HomePageView, OrganizationList, OrganizationCreateView, OrganizationUpdateView, OrganizationDeleteView,
+OrgMemberList, OrgMemberCreateView, OrgMemberUpdateView, OrgMemberDeleteView,
+StudentList, StudentCreateView, StudentUpdateView, StudentDeleteView,
+CollegeList, CollegeCreateView, CollegeUpdateView, CollegeDeleteView,
+ProgramList, ProgramCreateView, ProgramUpdateView, ProgramDeleteView,
+ChartView, BarCountStudentperCollege, PieOrgperCollege, LineActivities,
+ScatterTopOrganizations
+)
 from studentorg import views
 from django.contrib.auth import views as auth_views
 
@@ -14,12 +17,16 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('', views.HomePageView.as_view(), name='home'), 
-    path('dashboard_chart', ChartView.as_view(), name='dashboard-chart'),
-    path('bar-count-student-per-college/', views.BarCountStudentperCollege, name='bar-count-student-per-college'),
-    path('pie-org-per-college/', views.PieOrgperCollege, name='pie-org-per-college'),
-    path('org-count-by-college/', views.HorOrgCountByCollege, name='org-count-by-college'),
-    path('program-frequency-chart/', views.program_frequency_chart, name='program_frequency_chart'),
-    path('student-enrollment-by-year/', views.student_enrollment_by_year, name='student_enrollment_by_year'),
+    path('dashboard_chart', ChartView.as_view(), name="dashboard-chart"),
+    path('bar-count-student-per-college/', BarCountStudentperCollege, name='chart'),
+    path('pie-org-per-college/', PieOrgperCollege, name='chart'),
+    path('line-activities-by-month/', LineActivities, name='chart'),
+    path('scatter-top-organizations/', ScatterTopOrganizations, name='chart'),
+    
+    
+    
+    
+    
     path('organization_list/', OrganizationList.as_view(), name='organization-list'),
     path('organization_list/add/', OrganizationCreateView.as_view(), name='organization-add'),
     path('organization_list/organization_list/<pk>/', OrganizationUpdateView.as_view(), name='organization-update'),

@@ -12,7 +12,7 @@ from django.db.models.query import Q
 from django.utils.decorators import method_decorator 
 from django.contrib.auth.decorators import login_required 
 
-from django.db import connection
+from django.db.models.functions import TruncMonth
 from django.http import JsonResponse
 
 from django.contrib import messages
@@ -327,11 +327,9 @@ def PieOrgperCollege(request):
     }
      
      return JsonResponse(chart_data)
-
-
-
-#kila meighel
-def LineCountbyMonth2024(request):
+ 
+ 
+def LineActivities(request):
     data = (
         OrgMember.objects.filter(date_joined__year=2024)
         .annotate(month=ExtractMonth('date_joined'))
@@ -340,73 +338,29 @@ def LineCountbyMonth2024(request):
         .order_by('month')
     )
 
+    # Prepare data for all months
     activity_data = {item['month']: item['count'] for item in data}
-
-    all_months = range(1, 13) 
+    all_months = range(1, 13)  # Ensure data for all 12 months
     complete_data = {month: activity_data.get(month, 0) for month in all_months}
 
     chart_data = {
         'labels': [datetime(2024, month, 1).strftime('%b') for month in complete_data.keys()],
-        'series': [[count for count in complete_data.values()]],
+        'series': [[count for count in complete_data.values()]],  # Wrap count in a list
     }
 
     return JsonResponse(chart_data)
 
-
-def PieStudentCountbyOrg(request):
+def ScatterTopOrganizations(request):
     data = (
-        Student.objects.values('program__prog_name')
-        .annotate(count=Count('id'))
-        .order_by('-count')
+        Organization.objects
+        .annotate(member_count=Count('orgmember'))  #
+        .order_by('-member_count')
+        .values('name', 'member_count')[:6]  # Get the top 6 organizations by member count
     )
-
-    chart_data = {
-        'labels': [item['program__prog_name'] for item in data],
-        'series': [item['count'] for item in data],
-    }
-
-    return JsonResponse(chart_data)
-
-def HorOrgCountByCollege(request):
-    data = (
-        Organization.objects.values('college__college_name')
-        .annotate(count=Count('id'))
-        .order_by('-count')
-    )
-
-    chart_data = {
-        'labels': [item['college__college_name'] for item in data],
-        'series': [item['count'] for item in data],
-    }
-
-    return JsonResponse(chart_data)
-
-def program_frequency_chart(request):
-    college_program_count = College.objects.annotate(num_programs=Count('program'))
-
-    colleges = [college.college_name for college in college_program_count]
-    program_counts = [college.num_programs for college in college_program_count]
-
-    data = {
-        'colleges': colleges,
-        'program_counts': program_counts,
-    }
     
-    return JsonResponse(data)
+    # Prepare data for the scatter chart
+    labels = [entry['name'] for entry in data]  
+    member_counts = [entry['member_count'] for entry in data] 
+    
 
-def student_enrollment_by_year(request):
-    students_by_year = Student.objects.annotate(enrollment_year=Count('student_id'))
-
-    years = set([student.student_id[:4] for student in students_by_year]) 
-    year_counts = {year: 0 for year in years}
-
-    for student in students_by_year:
-        year = student.student_id[:4]
-        year_counts[year] += 1
-
-    data = {
-        'years': list(year_counts.keys()), 
-        'student_counts': list(year_counts.values()),
-    }
-
-    return JsonResponse(data)
+    return JsonResponse({'labels': labels, 'member_counts': member_counts})

@@ -83,44 +83,29 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Radar Chart -->
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><b>Radar Chart:</b> Programs in Every Colleges</div>
-                </div>
-                <div class="card-body">
-                    <div class="card-container" style="position: relative; height: 100%; width: 100%;">
-                        <canvas id="radarChart" class="radarChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Polar Area Chart -->
+        <!-- Line Chart -->
         <div class="col-md-9">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><b>Polar Area Chart:</b> Number of Students Enrolled Every Year</div>
-                </div>
-                <div class="card-body">
-                    <div class="card-container" style="position: relative; height: 100%; width: 100%;">
-                        <canvas id="polarAreaChart" class="polarAreaChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Horizontal Bar Chart -->
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title"><b>Horizontal Bar Chart:</b> Organizations in a College</div>
+                    <div class="card-title"><b>Line Chart:</b> Activities in Year 2024</div>
                 </div>
                 <div class="card-body">
                     <div class="card-container">
-                        <div class="horBarChart ct-perfect-fourth"></div>
+                        <div class="lineChart ct-perfect-fourth"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!-- Bubble Chart -->
+         <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><b>Scatter:</b> Top 5 Organization </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-container">
+                        <div id="scatterChart" class="ct-chart ct-perfect-fourth"></div>
                     </div>
                 </div>
             </div>
@@ -193,126 +178,78 @@ document.addEventListener("DOMContentLoaded", function () {
                         })
                     ]
                 });
-            });
+            })
+            .catch(error => console.error('Error fetching data:', error));
 
-        // Radar Chart (Fake Data)
-        fetch('/program-frequency-chart/')
-        .then(response => response.json())
-        .then(data => {
-            const labels = data.colleges; 
-            const programCounts = data.program_counts;  
 
-            new Chart(document.getElementById('radarChart'), {
-                type: 'radar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Programs per College',
-                        data: programCounts,
-                        fill: true,
-                        backgroundColor: 'rgba(79, 140, 255, 0.2)', 
-                        borderColor: 'rgb(79, 140, 255)', 
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
-                }
-            });
-        });
-
-        // Polar Area Chart
-        fetch('/student-enrollment-by-year/')
-        .then(response => response.json())
-        .then(data => {
-            
-            const years = data.years;  
-            const studentCounts = data.student_counts;  
-
-            new Chart(document.getElementById('polarAreaChart'), {
-                type: 'polarArea',
-                data: {
-                    labels: years,
-                    datasets: [{
-                        label: 'Students Enrolled by Year',
-                        data: studentCounts,
-                        backgroundColor: [
-                            'rgba(79, 140, 255, 0.2)',  
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 159, 64, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgb(79, 140, 255)',  
-                            'rgb(255, 99, 132)',
-                            'rgb(54, 162, 235)',
-                            'rgb(255, 159, 64)',
-                            'rgb(75, 192, 192)',
-                            'rgb(153, 102, 255)',
-                            'rgb(255, 159, 64)'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14
-                                }
-                            }
-                        },
-                    },
-                    scale: {
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        });
-
-        // Horizontal Bar Chart
-        fetch('/org-count-by-college/')
+        // Line Chart
+        fetch('/line-activities-by-month/')
             .then(response => response.json())
             .then(data => {
-                new Chartist.Bar('.horBarChart', {
-                    labels: data.labels,
-                    series: [data.series]
+                new Chartist.Line('.lineChart', {
+                    labels: data.labels, // Months (Jan, Feb, etc.)
+                    series: data.series, // Count of records per month
                 }, {
-                    horizontalBars: true,
-                    reverseData: true,
-                    axisX: {
-                        onlyInteger: true,
+                    fullWidth: true,
+                    chartPadding: {
+                        top: 15,
+                        right: 30,
+                        bottom: 15,
+                        left: 15,
                     },
                     axisY: {
-                        offset: 120,
+                        onlyInteger: true,
+                        low: 0,
+                    },
+                    axisX: {
+                        showGrid: true,
                     },
                     plugins: [
                         Chartist.plugins.tooltip({
-                            tooltipFnc: function (meta, value) {
-                                return `${value} organization(s)`;
-                            }
+                            tooltipFnc: (meta, value) => `${value} activity(ies)`,
+                        }),
+                    ],
+                });
+            })
+            .catch(error => console.error('Error fetching line chart data:', error));
+
+        // Scatter Chart
+        fetch('/scatter-top-organizations/')
+            .then(response => response.json())
+            .then(data => {
+                var chartData = {
+                    labels: data.labels,
+                    series: [
+                        data.member_counts.map((count, index) => {
+                            return { x: index + 1, y: count }; 
                         })
                     ]
+                };
+
+                new Chartist.Line('#scatterChart', chartData, {
+                    low: 0, 
+                    showLine: false,  // No line connecting points (scatter plot style)
+                    showPoint: true,  // Show points
+                    fullWidth: true,  // Make sure it fits within the container
+                    axisX: {
+                        labelInterpolationFnc: function(value) {
+                            return 'Org ' + value;  // Label format for x-axis
+                        }
+                    },
+                    axisY: {
+                        labelInterpolationFnc: function(value) {
+                            return value;
+                        },
+                        ticks: {
+                            beginAtZero: true, 
+                            suggestedMin: 1  // Ensure we start from 1 instead of 0
+                        }
+                    },
+                    plugins: [Chartist.plugins.tooltip()]  // Enable tooltips
                 });
+            
             });
+        
     });
 </script>
 
