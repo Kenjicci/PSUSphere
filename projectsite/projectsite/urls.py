@@ -16,7 +16,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', views.HomePageView.as_view(), name='home'), 
+    path('', HomePageView.as_view(), name='home'), 
     path('dashboard_chart', ChartView.as_view(), name="dashboard-chart"),
     path('bar-count-student-per-college/', BarCountStudentperCollege, name='chart'),
     path('pie-org-per-college/', PieOrgperCollege, name='chart'),

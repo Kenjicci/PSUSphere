@@ -3,27 +3,7 @@
 {% block content %}
 
 <style>
-    .lineChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
-        stroke: rgb(133, 236, 181);
-    }
-
-    .pieChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
-        stroke: rgb(135, 104, 175);
-    }
-
-    .radarChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
-        stroke: rgb(255, 209, 220);
-    }
-
-    .vennChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
-        stroke: rgb(135, 119, 255);
-    }
-
-    .lineChart .pieChart .horBarChart .polarAreaChart .horBarChart{
-        max-width: 100%;
-        height: auto;
-    }
-
+    /* General Page Styling */
     .page-inner {
         overflow-x: hidden;
         padding-left: 20px;
@@ -31,8 +11,8 @@
     }
 
     .col-md-9 {
-        margin-top: 2%;
-        margin-left: 2%;
+        margin: 0 auto;
+        padding: 0 15px;
     }
 
     .card-container {
@@ -45,11 +25,68 @@
     .card {
         width: 100%; 
         max-width: 600px; 
-        margin: auto; 
+        margin: 20px auto; /* Add consistent spacing around all cards */
     }
 
+    /* Bar Chart */
+    .bar-chart-section {
+        margin-bottom: 30px; /* Space below the Bar Chart */
+    }
 
+    /* Pie Chart */
+    .pie-chart-section {
+        margin-bottom: 30px; /* Space below the Pie Chart */
+    }
+
+    /* Line Chart */
+    .line-chart-section {
+        margin-bottom: 30px; /* Space below the Line Chart */
+    }
+
+    /* Scatter Chart */
+    .scatter-chart-section {
+        margin-bottom: 30px; /* Space below the Scatter Chart */
+    }
+
+    /* Polar Area Chart */
+    .polar-area-section {
+        margin-top: 1%; /* Space above the Polar Area Chart */
+    }
+
+    .polar-area-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px auto;
+        width: 75%;
+        max-width: 700px;
+        height: 450px;
+    }
+
+    /* Chart Container Styling */
+    .polarAreaChart {
+        width: 100%; /* Fill the container width */
+        height: 100%; /* Fill the container height */
+    }
+
+    /* Custom Colors for Charts */
+    .lineChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(133, 236, 181);
+    }
+
+    .pieChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(135, 104, 175);
+    }
+
+    .barChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(255, 209, 220);
+    }
+
+    .scatterChart .ct-series-a .ct-point, .ct-series-a .ct-bar {
+        stroke: rgb(135, 119, 255);
+    }
 </style>
+
 
 <div class="page-inner">
     <h4 class="page-title">Chart</h4>
@@ -57,73 +94,67 @@
     <div class="row">
 
         <!-- Bar Chart -->
-        <div class="col-md-9">
+        <div class="col-md-9 bar-chart-section">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><b>Bar Chart:</b> Students per College</div>
+                    <b>Bar Chart:</b> Students per College
                 </div>
                 <div class="card-body">
-                    <div class="card-container">
-                        <div class="barChart ct-perfect-fourth"></div>
-                    </div>
+                    <div class="barChart ct-perfect-fourth"></div>
                 </div>
             </div>
         </div>
 
         <!-- Pie Chart -->
-        <div class="col-md-9">
+        <div class="col-md-9 pie-chart-section">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><b>Pie Chart:</b> Number of Organizations per College</div>
+                    <b>Pie Chart:</b> Number of Organizations per College
                 </div>
                 <div class="card-body">
-                    <div class="card-container">
-                        <div class="pieChart ct-perfect-fourth"></div>
-                    </div>
+                    <div class="pieChart ct-perfect-fourth"></div>
                 </div>
             </div>
         </div>
 
         <!-- Line Chart -->
-        <div class="col-md-9">
+        <div class="col-md-9 line-chart-section">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><b>Line Chart:</b> Highlights of Activities in 2024</div>
+                    <b>Line Chart:</b> Highlights of Activities in 2024
                 </div>
                 <div class="card-body">
-                    <div class="card-container">
-                        <div class="lineChart ct-perfect-fourth"></div>
-                    </div>
+                    <div class="lineChart ct-perfect-fourth"></div>
                 </div>
             </div>
         </div>
-         <!-- Bubble Chart -->
-         <div class="col-md-9">
+
+        <!-- Scatter Chart -->
+        <div class="col-md-9 scatter-chart-section">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><b>Scatter:</b> Best 5 Performing Organizations</div>
+                    <b>Scatter Chart:</b> Best 5 Performing Organizations
                 </div>
                 <div class="card-body">
-                    <div class="card-container">
-                        <div id="scatterChart" class="ct-chart ct-perfect-fourth"></div>
-                    </div>
+                    <div id="scatterChart" class="ct-chart ct-perfect-fourth"></div>
                 </div>
             </div>
         </div>
 
         <!-- Polar Area Chart -->
-        <div class="col-md-9">
+        <div class="col-md-9 polar-area-section">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><b>Polar Area Chart:</b> Yearly Student Enrollment Statistics</div>
+                    <b>Polar Area Chart:</b> Yearly Student Enrollment Statistics
                 </div>
                 <div class="card-body">
-                    <div class="card-container" style="position: relative; height: 100%; width: 100%;">
+                    <div class="polar-area-container">
                         <canvas id="polarAreaChart" class="polarAreaChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
