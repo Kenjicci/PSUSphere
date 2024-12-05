@@ -355,7 +355,7 @@ def ScatterTopOrganizations(request):
         Organization.objects
         .annotate(member_count=Count('orgmember'))  #
         .order_by('-member_count')
-        .values('name', 'member_count')[:6]  # Get the top 6 organizations by member count
+        .values('name', 'member_count')[:5] 
     )
     
     # Prepare data for the scatter chart
@@ -364,3 +364,20 @@ def ScatterTopOrganizations(request):
     
 
     return JsonResponse({'labels': labels, 'member_counts': member_counts})
+
+def student_enrollment_by_year(request):
+    students_by_year = Student.objects.annotate(enrollment_year=Count('student_id'))
+
+    years = set([student.student_id[:4] for student in students_by_year]) 
+    year_counts = {year: 0 for year in years}
+
+    for student in students_by_year:
+        year = student.student_id[:4]
+        year_counts[year] += 1
+
+    data = {
+        'years': list(year_counts.keys()), 
+        'student_counts': list(year_counts.values()),
+    }
+
+    return JsonResponse(data)

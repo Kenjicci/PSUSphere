@@ -22,7 +22,7 @@ urlpatterns = [
     path('pie-org-per-college/', PieOrgperCollege, name='chart'),
     path('line-activities-by-month/', LineActivities, name='chart'),
     path('scatter-top-organizations/', ScatterTopOrganizations, name='chart'),
-    
+    path('student-enrollment-by-year/', views.student_enrollment_by_year, name='student_enrollment_by_year'),
     
     
     
